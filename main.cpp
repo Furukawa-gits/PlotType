@@ -25,21 +25,13 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
 	SetWindowText("LE2A_17_フルカワ_コウキ");
 
 	//使用変数
-	int key[256];
-	int oldkey[256];
-	for (int i = 0; i < 256; i++)
-	{
-		oldkey[i] = key[i] = 0;
-	}
+	Player player;
+	
 
 	//ゲームループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
 		//更新
-		for (int i = 0; i < 256; i++)
-		{
-			oldkey[i] = key[i];
-		}
 
 		//0でリセット
 		if (CheckHitKey(KEY_INPUT_0))
