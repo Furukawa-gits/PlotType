@@ -6,8 +6,6 @@ using namespace DxLib;
 
 struct easing
 {
-	Vector2 start;
-	Vector2 end;
 	float maxtime = 2.0f;
 	float timerate = 0.0f;
 	float addtime = 0.1f;
@@ -31,8 +29,9 @@ struct body
 	//端の座標
 	Vector2 bodyendpos;
 
-	//折るフラグ
+	//折る・開くフラグ
 	bool Isfold = false;
+	bool Isopen = true;
 
 	//イージング
 	easing ease;

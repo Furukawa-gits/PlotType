@@ -65,6 +65,15 @@ void Player::Update()
 		}
 	}
 
+	//Ü‚éEŠJ‚­
+	if (key[KEY_INPUT_LEFT] == true)
+	{
+		if (body_left.Isfold == false && body_left.Isopen == true)
+		{
+
+		}
+	}
+
 	body_left.update({ face.x - 30,face.y - 30 });
 	body_up.update({ face.x - 30,face.y - 30 });
 	body_right.update({ face.x + 30,face.y - 30 });
@@ -101,25 +110,49 @@ void body::init(Vector2 position, int number)
 	{
 		bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
 	}
+
+	Isopen = true;
+	Isfold = false;
 }
 
 void body::update(Vector2 bodystartpos)
 {
 	this->bodystartpos = bodystartpos;
 
-	if (Isfold == false)
+	if (Isfold == false && Isopen == true)
 	{
-		if (bodypat == 0)
+		if (ease.ismove == false)
 		{
-			bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
+			if (bodypat == 0)
+			{
+				bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
+			}
+			else if (bodypat == 1)
+			{
+				bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
+			}
+			else if (bodypat == 2)
+			{
+				bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
+			}
 		}
-		else if (bodypat == 1)
+	}
+	else if (Isfold == true && Isopen == false)
+	{
+		if (ease.ismove == false)
 		{
-			bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
-		}
-		else if (bodypat == 2)
-		{
-			bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
+			if (bodypat == 0)
+			{
+				bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
+			}
+			else if (bodypat == 1)
+			{
+				bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
+			}
+			else if (bodypat == 2)
+			{
+				bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
+			}
 		}
 	}
 
