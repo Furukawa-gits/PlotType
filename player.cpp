@@ -8,6 +8,14 @@ Player::Player()
 	}
 }
 
+void Player::init()
+{
+	face = { 100.0f,100.0f };
+	body_left.init({ face.x - 30,face.y - 30 }, 0);
+	body_up.init({ face.x - 30,face.y - 30 }, 1);
+	body_right.init({ face.x + 30,face.y - 30 }, 2);
+}
+
 void Player::Update()
 {
 	for (int i = 0; i < 256; i++)
@@ -15,32 +23,109 @@ void Player::Update()
 		oldkey[i] = key[i];
 	}
 
-	if (key[KEY_INPUT_D])
+	GetHitKeyStateAll(key);
+
+	//左右移動
+	if (key[KEY_INPUT_D] == true)
 	{
 		face.x += 2.0f;
 	}
-	if (key[KEY_INPUT_A])
+	if (key[KEY_INPUT_A] == true)
 	{
 		face.x -= 2.0f;
 	}
 
-	if (key[KEY_INPUT_W] && !oldkey[KEY_INPUT_W])
+	//ジャンプ
+	if (key[KEY_INPUT_SPACE] && IsJump == false)
 	{
 		IsJump = true;
-		jumpspeed = 3.0f;
+		fallspeed = 4.2f;
 	}
 
+	if (IsJump == true)
+	{
+		face.y -= fallspeed;
+		fallspeed -= 0.1f;
 
+		if (face.y >= 500 - 30)
+		{
+			face.y = 500 - 30;
+			IsJump = false;
+		}
+	}
 
-	body_1 = { face.x - 60,face.y };
-	body_2 = { face.x,face.y - 60 };
-	body_3 = { face.x + 60,face.y };
+	//落下判定
+	if (face.y < 500 - 31 && IsJump == false)
+	{
+		face.y += fallspeed;
+
+		if (fallspeed <= 5.0)
+		{
+			fallspeed += 0.1f;
+		}
+	}
+
+	body_left.update({ face.x - 30,face.y - 30 });
+	body_up.update({ face.x - 30,face.y - 30 });
+	body_right.update({ face.x + 30,face.y - 30 });
 }
 
 void Player::Draw()
 {
 	DrawBox(face.x - 30, face.y - 30, face.x + 30, face.y + 30, GetColor(255, 0, 0), true);
-	DrawBox(body_1.x - 30, body_1.y - 30, body_1.x + 30, body_1.y + 30, GetColor(255, 255, 0), true);
-	DrawBox(body_2.x - 30, body_2.y - 30, body_2.x + 30, body_2.y + 30, GetColor(255, 255, 0), true);
-	DrawBox(body_3.x - 30, body_3.y - 30, body_3.x + 30, body_3.y + 30, GetColor(255, 255, 0), true);
+
+	body_left.draw();
+	body_up.draw();
+	body_right.draw();
+
+	DrawFormatString(0, 0, GetColor(255, 255, 255), "AD:左右移動");
+	DrawFormatString(0, 20, GetColor(255, 255, 255), "SPACE:ジャンプ");
+	DrawFormatString(0, 40, GetColor(255, 255, 255), "←↑→:折る・開く");
+}
+
+void body::init(Vector2 position, int number)
+{
+	bodystartpos = position;
+
+	bodypat = number;
+
+	if (bodypat == 0)
+	{
+		bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
+	}
+	else if (bodypat == 1)
+	{
+		bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
+	}
+	else if (bodypat == 2)
+	{
+		bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
+	}
+}
+
+void body::update(Vector2 bodystartpos)
+{
+	this->bodystartpos = bodystartpos;
+
+	if (Isfold == false)
+	{
+		if (bodypat == 0)
+		{
+			bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
+		}
+		else if (bodypat == 1)
+		{
+			bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
+		}
+		else if (bodypat == 2)
+		{
+			bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
+		}
+	}
+
+}
+
+void body::draw()
+{
+	DrawBox(bodystartpos.x, bodystartpos.y, bodyendpos.x, bodyendpos.y, GetColor(255, 255, 0), true);
 }

@@ -27,21 +27,21 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
 	//使用変数
 	Player player;
 	
+	player.init();
 
 	//ゲームループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
 		//更新
 
-		//0でリセット
-		if (CheckHitKey(KEY_INPUT_0))
-		{
-
-		}
+		player.Update();
 
 		//画面クリア
 		ClearDrawScreen();
 
+		//描画
+		player.Draw();
+		DrawLine(0, 500, 1280, 500, GetColor(0, 255, 0), 3);
 
 		//フリップ
 		ScreenFlip();
