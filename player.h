@@ -33,6 +33,9 @@ struct body
 	bool Isfold = false;
 	bool Isopen = true;
 
+	//折っている途中、または開いている途中かどうか
+	bool Isaction = false;
+
 	//イージング
 	easing ease;
 
