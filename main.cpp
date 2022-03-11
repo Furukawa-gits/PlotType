@@ -46,7 +46,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
 		//ƒtƒŠƒbƒv
 		ScreenFlip();
 
-		WaitTimer(20);
+		WaitTimer(10);
 	}
 
 	DxLib_End();
