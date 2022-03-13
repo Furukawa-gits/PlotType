@@ -21,6 +21,15 @@ struct easing
 
 struct body
 {
+	enum bodytype
+	{
+		face,
+		left,
+		up,
+		right,
+		down
+	};
+
 	int bodypat;
 
 	//体の座標
@@ -35,6 +44,9 @@ struct body
 
 	//折っている途中、または開いている途中かどうか
 	bool Isaction = false;
+
+	//上に重なっている噛みの数
+	int overlap = 0;
 
 	//イージング
 	easing ease;

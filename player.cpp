@@ -47,15 +47,15 @@ void Player::Update()
 		face.y -= fallspeed;
 		fallspeed -= 0.1f;
 
-		if (face.y >= 500 - 30)
+		if (face.y >= floorHeight - 30)
 		{
-			face.y = 500 - 30;
+			face.y = floorHeight - 30;
 			IsJump = false;
 		}
 	}
 
 	//—Ž‰º”»’è
-	if (face.y < 500 - 31 && IsJump == false)
+	if (face.y < floorHeight - 31 && IsJump == false)
 	{
 		face.y += fallspeed;
 
