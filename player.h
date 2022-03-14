@@ -91,4 +91,7 @@ public:
 
 	//描画
 	void Draw();
+
+	//キーのトリガー判定
+	bool returnkeytrigger(int keycode);
 };

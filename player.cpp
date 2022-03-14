@@ -68,7 +68,7 @@ void Player::Update()
 
 	//折る・開く
 	//左
-	if (key[KEY_INPUT_LEFT] == true && oldkey[KEY_INPUT_LEFT] == false && body_one.ease.ismove == false)
+	if (returnkeytrigger(KEY_INPUT_LEFT) && body_one.ease.ismove == false && body_one.bodypat == left)
 	{
 		body_one.ease.addtime = 0.1f;
 		body_one.ease.maxtime = 1.5f;
@@ -93,7 +93,7 @@ void Player::Update()
 		}
 	}
 	//上
-	if (key[KEY_INPUT_UP] == true && oldkey[KEY_INPUT_UP] == false && body_two.ease.ismove == false)
+	if (returnkeytrigger(KEY_INPUT_UP) && body_two.ease.ismove == false && body_two.bodypat == up)
 	{
 		body_two.ease.addtime = 0.1f;
 		body_two.ease.maxtime = 1.5f;
@@ -118,7 +118,7 @@ void Player::Update()
 		}
 	}
 	//右
-	if (key[KEY_INPUT_RIGHT] == true && oldkey[KEY_INPUT_RIGHT] == false && body_three.ease.ismove == false)
+	if (returnkeytrigger(KEY_INPUT_RIGHT) && body_three.ease.ismove == false && body_three.bodypat == right)
 	{
 		body_three.ease.addtime = 0.1f;
 		body_three.ease.maxtime = 1.5f;
@@ -145,7 +145,7 @@ void Player::Update()
 
 	}
 	//下
-	if (key[KEY_INPUT_DOWN] == true && oldkey[KEY_INPUT_DOWN] == false && body_two.ease.ismove == false)
+	if (returnkeytrigger(KEY_INPUT_DOWN) && body_two.ease.ismove == false && body_two.bodypat == down)
 	{
 		body_two.ease.addtime = 0.1f;
 		body_two.ease.maxtime = 1.5f;
@@ -294,6 +294,15 @@ void Player::Draw()
 	DrawFormatString(0, 60, GetColor(255, 255, 255), "重なっている枚数\n左：%d\n上：%d\n右：%d", body_one.overlap, body_two.overlap, body_three.overlap);
 }
 
+bool Player::returnkeytrigger(int keycode)
+{
+	if (oldkey[keycode] == false && key[keycode] == true)
+	{
+		return true;
+	}
+	return false;
+}
+
 void body::init(Vector2 position, bodytype number)
 {
 	bodypat = number;
@@ -348,19 +357,27 @@ void body::update(Vector2 center)
 
 			if (bodypat == left)
 			{
+				bodystartpos = { center.x - 30,center.y - 30 };
 				bodyendpos.x = ease.easeout(bodystartpos.x + 60, bodystartpos.x - 60, ease.timerate);
+				bodyendpos.y = bodystartpos.y + 60;
 			}
 			else if (bodypat == up)
 			{
+				bodystartpos = { center.x - 30,center.y - 30 };
 				bodyendpos.y = ease.easeout(bodystartpos.y + 60, bodystartpos.y - 60, ease.timerate);
+				bodyendpos.x = bodystartpos.x + 60;
 			}
 			else if (bodypat == right)
 			{
+				bodystartpos = { center.x + 30,center.y + 30 };
 				bodyendpos.x = ease.easeout(bodystartpos.x - 60, bodystartpos.x + 60, ease.timerate);
+				bodyendpos.y = bodystartpos.y - 60;
 			}
 			else if (bodypat == down)
 			{
+				bodystartpos = { center.x + 30,center.y + 30 };
 				bodyendpos.y = ease.easeout(bodystartpos.y - 60, bodystartpos.y + 60, ease.timerate);
+				bodyendpos.x = bodystartpos.x - 60;
 			}
 
 			if (ease.timerate >= 1.0f)
@@ -398,19 +415,27 @@ void body::update(Vector2 center)
 
 			if (bodypat == left)
 			{
+				bodystartpos = { center.x - 30,center.y - 30 };
 				bodyendpos.x = ease.easeout(bodystartpos.x - 60, bodystartpos.x + 60, ease.timerate);
+				bodyendpos.y = bodystartpos.y + 60;
 			}
 			else if (bodypat == up)
 			{
+				bodystartpos = { center.x - 30,center.y - 30 };
 				bodyendpos.y = ease.easeout(bodystartpos.y - 60, bodystartpos.y + 60, ease.timerate);
+				bodyendpos.x = bodystartpos.x + 60;
 			}
 			else if (bodypat == right)
 			{
+				bodystartpos = { center.x + 30,center.y + 30 };
 				bodyendpos.x = ease.easeout(bodystartpos.x + 60, bodystartpos.x - 60, ease.timerate);
+				bodyendpos.y = bodystartpos.y - 60;
 			}
 			else if (bodypat == down)
 			{
+				bodystartpos = { center.x + 30,center.y + 30 };
 				bodyendpos.y = ease.easeout(bodystartpos.y + 60, bodystartpos.y - 60, ease.timerate);
+				bodyendpos.x = bodystartpos.x - 60;
 			}
 
 			if (ease.timerate >= 1.0f)
