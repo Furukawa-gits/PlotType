@@ -51,7 +51,7 @@ struct body
 	easing ease;
 
 	void init(Vector2 position, bodytype number);
-	void update(Vector2 bodystartpos);
+	void update(Vector2 center);
 	void draw();
 };
 
