@@ -19,17 +19,16 @@ struct easing
 	}
 };
 
+enum bodytype
+{
+	left,
+	up,
+	right,
+	down
+};
+
 struct body
 {
-	enum bodytype
-	{
-		face,
-		left,
-		up,
-		right,
-		down
-	};
-
 	int bodypat;
 
 	//体の座標
@@ -51,7 +50,7 @@ struct body
 	//イージング
 	easing ease;
 
-	void init(Vector2 position, int number);
+	void init(Vector2 position, bodytype number);
 	void update(Vector2 bodystartpos);
 	void draw();
 };
@@ -64,12 +63,12 @@ public:
 	float floorHeight = 500;
 
 	//体の構成要素
-	Vector2 face = { 100.0f,100.0f };
+	Vector2 center_position = { 100.0f,100.0f };
 
 	//体(折るほう)
-	body body_left;
-	body body_up;
-	body body_right;
+	body body_one;
+	body body_two;
+	body body_three;
 
 	//ジャンプ
 	bool IsJump = false;
