@@ -13,7 +13,7 @@ void Player::init()
 	center_position = { 100.0f,100.0f };
 
 	body_one.init(center_position, left);
-	body_two.init(center_position, up);
+	body_two.init(center_position, down);
 	body_three.init(center_position, right);
 }
 
@@ -75,12 +75,12 @@ void Player::Update()
 		body_one.ease.timerate = 0.0f;
 
 		//折る
-		if (body_one.Isfold == false && body_one.Isopen == true && body_one.Isaction == false)
+		if (body_one.Isfold == false && body_one.Isopen == true && body_one.Isaction_fold == false)
 		{
 			body_one.ease.ismove = true;
 			body_one.Isfold = true;
 			body_one.Isopen = false;
-			body_one.Isaction = true;
+			body_one.Isaction_fold = true;
 
 			if (body_two.Isfold == true)
 			{
@@ -100,12 +100,12 @@ void Player::Update()
 		body_two.ease.timerate = 0.0f;
 
 		//折る
-		if (body_two.Isfold == false && body_two.Isopen == true && body_two.Isaction == false)
+		if (body_two.Isfold == false && body_two.Isopen == true && body_two.Isaction_fold == false)
 		{
 			body_two.ease.ismove = true;
 			body_two.Isfold = true;
 			body_two.Isopen = false;
-			body_two.Isaction = true;
+			body_two.Isaction_fold = true;
 
 			if (body_one.Isfold == true)
 			{
@@ -125,12 +125,12 @@ void Player::Update()
 		body_three.ease.timerate = 0.0f;
 
 		//折る
-		if (body_three.Isfold == false && body_three.Isopen == true && body_three.Isaction == false)
+		if (body_three.Isfold == false && body_three.Isopen == true && body_three.Isaction_fold == false)
 		{
 			body_three.ease.ismove = true;
 			body_three.Isfold = true;
 			body_three.Isopen = false;
-			body_three.Isaction = true;
+			body_three.Isaction_fold = true;
 
 			if (body_one.Isfold == true)
 			{
@@ -152,12 +152,12 @@ void Player::Update()
 		body_two.ease.timerate = 0.0f;
 
 		//折る
-		if (body_two.Isfold == false && body_two.Isopen == true && body_two.Isaction == false)
+		if (body_two.Isfold == false && body_two.Isopen == true && body_two.Isaction_fold == false)
 		{
 			body_two.ease.ismove = true;
 			body_two.Isfold = true;
 			body_two.Isopen = false;
-			body_two.Isaction = true;
+			body_two.Isaction_fold = true;
 
 			if (body_one.Isfold == true)
 			{
@@ -174,7 +174,7 @@ void Player::Update()
 	if (key[KEY_INPUT_SPACE] == true && oldkey[KEY_INPUT_SPACE] == false)
 	{
 		//左
-		if (body_one.Isfold == true && body_one.Isopen == false && body_one.Isaction == false && body_one.overlap == 0)
+		if (body_one.Isfold == true && body_one.Isopen == false && body_one.Isaction_fold == false && body_one.overlap == 0)
 		{
 			body_one.ease.addtime = 0.1f;
 			body_one.ease.maxtime = 1.5f;
@@ -183,7 +183,7 @@ void Player::Update()
 			body_one.ease.ismove = true;
 			body_one.Isfold = false;
 			body_one.Isopen = true;
-			body_one.Isaction = true;
+			body_one.Isaction_fold = true;
 
 			if (body_two.Isfold == true)
 			{
@@ -195,7 +195,7 @@ void Player::Update()
 			}
 		}
 		//上
-		else if (body_two.Isfold == true && body_two.Isopen == false && body_two.Isaction == false && body_two.overlap == 0)
+		else if (body_two.Isfold == true && body_two.Isopen == false && body_two.Isaction_fold == false && body_two.overlap == 0)
 		{
 			body_two.ease.addtime = 0.1f;
 			body_two.ease.maxtime = 1.5f;
@@ -204,7 +204,7 @@ void Player::Update()
 			body_two.ease.ismove = true;
 			body_two.Isfold = false;
 			body_two.Isopen = true;
-			body_two.Isaction = true;
+			body_two.Isaction_fold = true;
 
 			if (body_one.Isfold == true)
 			{
@@ -216,7 +216,7 @@ void Player::Update()
 			}
 		}
 		//右
-		else if (body_three.Isfold == true && body_three.Isopen == false && body_three.Isaction == false && body_three.overlap == 0)
+		else if (body_three.Isfold == true && body_three.Isopen == false && body_three.Isaction_fold == false && body_three.overlap == 0)
 		{
 			body_three.ease.addtime = 0.1f;
 			body_three.ease.maxtime = 1.5f;
@@ -225,7 +225,7 @@ void Player::Update()
 			body_three.ease.ismove = true;
 			body_three.Isfold = false;
 			body_three.Isopen = true;
-			body_three.Isaction = true;
+			body_three.Isaction_fold = true;
 
 			if (body_one.Isfold == true)
 			{
@@ -235,6 +235,16 @@ void Player::Update()
 			{
 				body_two.overlap--;
 			}
+		}
+	}
+
+
+	//体のスライド
+	if (returnkeytrigger(KEY_INPUT_Z))
+	{
+		if (body_one.bodydistance < 2)
+		{
+			
 		}
 	}
 
@@ -292,6 +302,7 @@ void Player::Draw()
 	DrawFormatString(0, 20, GetColor(255, 255, 255), "SPACE:ジャンプ");
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "←↑→:折る・開く");
 	DrawFormatString(0, 60, GetColor(255, 255, 255), "重なっている枚数\n左：%d\n上：%d\n右：%d", body_one.overlap, body_two.overlap, body_three.overlap);
+	DrawFormatString(0, 140, GetColor(255, 255, 255), "左右スライド：Z or X\n上下スライド：C or V");
 }
 
 bool Player::returnkeytrigger(int keycode)
@@ -383,7 +394,7 @@ void body::update(Vector2 center)
 			if (ease.timerate >= 1.0f)
 			{
 				ease.ismove = false;
-				Isaction = false;
+				Isaction_fold = false;
 			}
 		}
 		else
@@ -441,7 +452,7 @@ void body::update(Vector2 center)
 			if (ease.timerate >= 1.0f)
 			{
 				ease.ismove = false;
-				Isaction = false;
+				Isaction_fold = false;
 			}
 		}
 		else

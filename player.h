@@ -42,10 +42,13 @@ struct body
 	bool Isopen = true;
 
 	//折っている途中、または開いている途中かどうか
-	bool Isaction = false;
+	bool Isaction_fold = false;
 
 	//上に重なっている噛みの数
 	int overlap = 0;
+
+	//本体からどれだけ離れているか(左右専用)
+	int bodydistance = 1;
 
 	//イージング
 	easing ease;
