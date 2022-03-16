@@ -29,20 +29,27 @@ enum bodytype
 
 struct body
 {
-	int bodypat;
+	int body_type;
 
 	//体の座標
 	Vector2 bodystartpos;
-	
+
 	//端の座標
 	Vector2 bodyendpos;
+
+	//スライドの開始座標
+	Vector2 slidestartpos;
 
 	//折る・開くフラグ
 	bool Isfold = false;
 	bool Isopen = true;
 
-	//折っている途中、または開いている途中かどうか
-	bool Isaction_fold = false;
+	//スライドフラグ・スライドする方向
+	bool Isslide = false;
+	int slidepat = 0;
+
+	//折る・開く・スライドをしている途中かどうか
+	bool Isaction = false;
 
 	//上に重なっている噛みの数
 	int overlap = 0;
@@ -53,8 +60,13 @@ struct body
 	//イージング
 	easing ease;
 
+	//体の色
+	int bodycolor = GetColor(255, 255, 255);
+
 	void init(Vector2 position, bodytype number);
 	void update(Vector2 center);
+	//1 or -1(1:right&down -1:left&up)
+	void setslide(int slidepat, Vector2 startpos);
 	void draw();
 };
 

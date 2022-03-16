@@ -13,8 +13,13 @@ void Player::init()
 	center_position = { 100.0f,100.0f };
 
 	body_one.init(center_position, left);
-	body_two.init(center_position, down);
+	body_one.bodycolor = GetColor(255, 255, 0);
+
+	body_two.init(center_position, up);
+	body_two.bodycolor = GetColor(0, 255, 0);
+
 	body_three.init(center_position, right);
+	body_three.bodycolor = GetColor(255, 0, 255);
 }
 
 void Player::Update()
@@ -68,19 +73,19 @@ void Player::Update()
 
 	//折る・開く
 	//左
-	if (returnkeytrigger(KEY_INPUT_LEFT) && body_one.ease.ismove == false && body_one.bodypat == left)
+	if (returnkeytrigger(KEY_INPUT_LEFT) && body_one.ease.ismove == false && body_one.body_type == left)
 	{
 		body_one.ease.addtime = 0.1f;
 		body_one.ease.maxtime = 1.5f;
 		body_one.ease.timerate = 0.0f;
 
 		//折る
-		if (body_one.Isfold == false && body_one.Isopen == true && body_one.Isaction_fold == false)
+		if (body_one.Isfold == false && body_one.Isopen == true && body_one.Isaction == false)
 		{
 			body_one.ease.ismove = true;
 			body_one.Isfold = true;
 			body_one.Isopen = false;
-			body_one.Isaction_fold = true;
+			body_one.Isaction = true;
 
 			if (body_two.Isfold == true)
 			{
@@ -93,19 +98,19 @@ void Player::Update()
 		}
 	}
 	//上
-	if (returnkeytrigger(KEY_INPUT_UP) && body_two.ease.ismove == false && body_two.bodypat == up)
+	if (returnkeytrigger(KEY_INPUT_UP) && body_two.ease.ismove == false && body_two.body_type == up)
 	{
 		body_two.ease.addtime = 0.1f;
 		body_two.ease.maxtime = 1.5f;
 		body_two.ease.timerate = 0.0f;
 
 		//折る
-		if (body_two.Isfold == false && body_two.Isopen == true && body_two.Isaction_fold == false)
+		if (body_two.Isfold == false && body_two.Isopen == true && body_two.Isaction == false)
 		{
 			body_two.ease.ismove = true;
 			body_two.Isfold = true;
 			body_two.Isopen = false;
-			body_two.Isaction_fold = true;
+			body_two.Isaction = true;
 
 			if (body_one.Isfold == true)
 			{
@@ -118,19 +123,19 @@ void Player::Update()
 		}
 	}
 	//右
-	if (returnkeytrigger(KEY_INPUT_RIGHT) && body_three.ease.ismove == false && body_three.bodypat == right)
+	if (returnkeytrigger(KEY_INPUT_RIGHT) && body_three.ease.ismove == false && body_three.body_type == right)
 	{
 		body_three.ease.addtime = 0.1f;
 		body_three.ease.maxtime = 1.5f;
 		body_three.ease.timerate = 0.0f;
 
 		//折る
-		if (body_three.Isfold == false && body_three.Isopen == true && body_three.Isaction_fold == false)
+		if (body_three.Isfold == false && body_three.Isopen == true && body_three.Isaction == false)
 		{
 			body_three.ease.ismove = true;
 			body_three.Isfold = true;
 			body_three.Isopen = false;
-			body_three.Isaction_fold = true;
+			body_three.Isaction = true;
 
 			if (body_one.Isfold == true)
 			{
@@ -145,19 +150,19 @@ void Player::Update()
 
 	}
 	//下
-	if (returnkeytrigger(KEY_INPUT_DOWN) && body_two.ease.ismove == false && body_two.bodypat == down)
+	if (returnkeytrigger(KEY_INPUT_DOWN) && body_two.ease.ismove == false && body_two.body_type == down)
 	{
 		body_two.ease.addtime = 0.1f;
 		body_two.ease.maxtime = 1.5f;
 		body_two.ease.timerate = 0.0f;
 
 		//折る
-		if (body_two.Isfold == false && body_two.Isopen == true && body_two.Isaction_fold == false)
+		if (body_two.Isfold == false && body_two.Isopen == true && body_two.Isaction == false)
 		{
 			body_two.ease.ismove = true;
 			body_two.Isfold = true;
 			body_two.Isopen = false;
-			body_two.Isaction_fold = true;
+			body_two.Isaction = true;
 
 			if (body_one.Isfold == true)
 			{
@@ -174,7 +179,7 @@ void Player::Update()
 	if (key[KEY_INPUT_SPACE] == true && oldkey[KEY_INPUT_SPACE] == false)
 	{
 		//左
-		if (body_one.Isfold == true && body_one.Isopen == false && body_one.Isaction_fold == false && body_one.overlap == 0)
+		if (body_one.Isfold == true && body_one.Isopen == false && body_one.Isaction == false && body_one.overlap == 0)
 		{
 			body_one.ease.addtime = 0.1f;
 			body_one.ease.maxtime = 1.5f;
@@ -183,7 +188,7 @@ void Player::Update()
 			body_one.ease.ismove = true;
 			body_one.Isfold = false;
 			body_one.Isopen = true;
-			body_one.Isaction_fold = true;
+			body_one.Isaction = true;
 
 			if (body_two.Isfold == true)
 			{
@@ -195,7 +200,7 @@ void Player::Update()
 			}
 		}
 		//上
-		else if (body_two.Isfold == true && body_two.Isopen == false && body_two.Isaction_fold == false && body_two.overlap == 0)
+		else if (body_two.Isfold == true && body_two.Isopen == false && body_two.Isaction == false && body_two.overlap == 0)
 		{
 			body_two.ease.addtime = 0.1f;
 			body_two.ease.maxtime = 1.5f;
@@ -204,7 +209,7 @@ void Player::Update()
 			body_two.ease.ismove = true;
 			body_two.Isfold = false;
 			body_two.Isopen = true;
-			body_two.Isaction_fold = true;
+			body_two.Isaction = true;
 
 			if (body_one.Isfold == true)
 			{
@@ -216,7 +221,7 @@ void Player::Update()
 			}
 		}
 		//右
-		else if (body_three.Isfold == true && body_three.Isopen == false && body_three.Isaction_fold == false && body_three.overlap == 0)
+		else if (body_three.Isfold == true && body_three.Isopen == false && body_three.Isaction == false && body_three.overlap == 0)
 		{
 			body_three.ease.addtime = 0.1f;
 			body_three.ease.maxtime = 1.5f;
@@ -225,7 +230,7 @@ void Player::Update()
 			body_three.ease.ismove = true;
 			body_three.Isfold = false;
 			body_three.Isopen = true;
-			body_three.Isaction_fold = true;
+			body_three.Isaction = true;
 
 			if (body_one.Isfold == true)
 			{
@@ -240,11 +245,36 @@ void Player::Update()
 
 
 	//体のスライド
-	if (returnkeytrigger(KEY_INPUT_Z))
+	//左にずらす
+	if (returnkeytrigger(KEY_INPUT_Z) && body_one.bodydistance < 2 && body_one.Isaction == false)
 	{
-		if (body_one.bodydistance < 2)
+		body_one.setslide(-1, body_one.bodystartpos);
+
+		if (body_one.body_type == right)
 		{
-			
+			body_one.body_type = left;
+		}
+	}
+
+	if (returnkeytrigger(KEY_INPUT_X) && body_three.bodydistance < 2)
+	{
+		if (body_three.Isaction == false)
+		{
+			body_one.setslide(1, body_one.bodystartpos);
+			body_three.setslide(1, body_three.bodystartpos);
+
+			if (body_three.bodydistance == 1)
+			{
+				body_three.bodydistance = 2;
+			}
+			if (body_one.bodydistance == 2)
+			{
+				body_one.bodydistance = 1;
+			}
+			else
+			{
+				body_one.body_type = right;
+			}
 		}
 	}
 
@@ -303,6 +333,7 @@ void Player::Draw()
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "←↑→:折る・開く");
 	DrawFormatString(0, 60, GetColor(255, 255, 255), "重なっている枚数\n左：%d\n上：%d\n右：%d", body_one.overlap, body_two.overlap, body_three.overlap);
 	DrawFormatString(0, 140, GetColor(255, 255, 255), "左右スライド：Z or X\n上下スライド：C or V");
+	DrawFormatString(0, 180, GetColor(255, 255, 255), "%d   %d", body_one.bodydistance, body_one.body_type);
 }
 
 bool Player::returnkeytrigger(int keycode)
@@ -316,33 +347,26 @@ bool Player::returnkeytrigger(int keycode)
 
 void body::init(Vector2 position, bodytype number)
 {
-	bodypat = number;
+	body_type = number;
 
-	if (bodypat == left || bodypat == up)
+	if (body_type == left)
 	{
-		bodystartpos = { position.x - 30,position.y - 30 };
+		bodystartpos = { position.x - 90,position.y - 30 };
 	}
-	else if (bodypat == right || bodypat == down)
+	else if (body_type == up)
 	{
-		bodystartpos = { position.x + 30,position.y + 30 };
+		bodystartpos = { position.x - 30,position.y - 90 };
+	}
+	else if (body_type == right)
+	{
+		bodystartpos = { position.x + 30,position.y - 30 };
+	}
+	else if (body_type == down)
+	{
+		bodystartpos = { position.x - 30,position.y + 30 };
 	}
 
-	if (bodypat == left)
-	{
-		bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
-	}
-	else if (bodypat == up)
-	{
-		bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
-	}
-	else if (bodypat == right)
-	{
-		bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
-	}
-	else if (bodypat == down)
-	{
-		bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
-	}
+	bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
 
 	Isopen = true;
 	Isfold = false;
@@ -350,15 +374,7 @@ void body::init(Vector2 position, bodytype number)
 
 void body::update(Vector2 center)
 {
-	if (bodypat == left || bodypat == up)
-	{
-		bodystartpos = { center.x - 30,center.y - 30 };
-	}
-	else if (bodypat == right || bodypat == down)
-	{
-		bodystartpos = { center.x + 30,center.y + 30 };
-	}
-
+	//開いているとき
 	if (Isfold == false && Isopen == true)
 	{
 		if (ease.ismove == true)
@@ -366,57 +382,60 @@ void body::update(Vector2 center)
 			ease.addtime += ease.maxtime / 60.0f;
 			ease.timerate = min(ease.addtime / ease.maxtime, 1.0f);
 
-			if (bodypat == left)
+			if (body_type == left)
 			{
-				bodystartpos = { center.x - 30,center.y - 30 };
-				bodyendpos.x = ease.easeout(bodystartpos.x + 60, bodystartpos.x - 60, ease.timerate);
+				bodyendpos = { center.x - (30 * bodydistance),center.y + 30 };
+				bodystartpos.x = ease.easeout(bodyendpos.x + 60, bodyendpos.x - 60, ease.timerate);
+				bodystartpos.y = bodyendpos.y - 60;
+			}
+			if (body_type == up)
+			{
+				bodyendpos = { center.x + 30,center.y - 30 };
+				bodystartpos.y = ease.easeout(bodyendpos.y + 60, bodyendpos.y - 60, ease.timerate);
+				bodystartpos.x = bodyendpos.x - 60;
+			}
+			if (body_type == right)
+			{
+				bodystartpos = { center.x + (30 * bodydistance),center.y - 30 };
+				bodyendpos.x = ease.easeout(bodystartpos.x - 60, bodystartpos.x + 60, ease.timerate);
 				bodyendpos.y = bodystartpos.y + 60;
 			}
-			else if (bodypat == up)
+			if (body_type == down)
 			{
-				bodystartpos = { center.x - 30,center.y - 30 };
+				bodystartpos = { center.x + 30,center.y + 30 };
 				bodyendpos.y = ease.easeout(bodystartpos.y + 60, bodystartpos.y - 60, ease.timerate);
-				bodyendpos.x = bodystartpos.x + 60;
-			}
-			else if (bodypat == right)
-			{
-				bodystartpos = { center.x + 30,center.y + 30 };
-				bodyendpos.x = ease.easeout(bodystartpos.x - 60, bodystartpos.x + 60, ease.timerate);
-				bodyendpos.y = bodystartpos.y - 60;
-			}
-			else if (bodypat == down)
-			{
-				bodystartpos = { center.x + 30,center.y + 30 };
-				bodyendpos.y = ease.easeout(bodystartpos.y - 60, bodystartpos.y + 60, ease.timerate);
 				bodyendpos.x = bodystartpos.x - 60;
 			}
 
 			if (ease.timerate >= 1.0f)
 			{
 				ease.ismove = false;
-				Isaction_fold = false;
+				Isaction = false;
 			}
 		}
 		else
 		{
-			if (bodypat == left)
+			if (body_type == left)
 			{
-				bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
+				bodystartpos = { center.x - (30 + bodydistance * 60),center.y - 30 };
 			}
-			else if (bodypat == up)
+			if (body_type == up)
 			{
-				bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
+				bodystartpos = { center.x - 30,center.y - 90 };
 			}
-			else if (bodypat == right)
+			if (body_type == right)
 			{
-				bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
+				bodystartpos = { center.x + (30 + (bodydistance - 1) * 60),center.y - 30 };
 			}
-			else if (bodypat == down)
+			if (body_type == down)
 			{
-				bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
+				bodystartpos = { center.x - 30,center.y + 30 };
 			}
+
+			bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
 		}
 	}
+	//折るとき
 	else if (Isfold == true && Isopen == false)
 	{
 		if (ease.ismove == true)
@@ -424,63 +443,106 @@ void body::update(Vector2 center)
 			ease.addtime += ease.maxtime / 60.0f;
 			ease.timerate = min(ease.addtime / ease.maxtime, 1.0f);
 
-			if (bodypat == left)
+			if (body_type == left)
 			{
-				bodystartpos = { center.x - 30,center.y - 30 };
-				bodyendpos.x = ease.easeout(bodystartpos.x - 60, bodystartpos.x + 60, ease.timerate);
+				bodyendpos = { center.x - 30,center.y + 30 };
+				bodystartpos.x = ease.easeout(bodyendpos.x - 60, bodyendpos.x + 60, ease.timerate);
+				bodystartpos.y = bodyendpos.y - 60;
+			}
+			if (body_type == up)
+			{
+				bodyendpos = { center.x + 30,center.y - 30 };
+				bodystartpos.y = ease.easeout(bodyendpos.y - 60, bodyendpos.y + 60, ease.timerate);
+				bodystartpos.x = bodyendpos.x - 60;
+			}
+			if (body_type == right)
+			{
+				bodystartpos = { center.x + 30,center.y - 30 };
+				bodyendpos.x = ease.easeout(bodystartpos.x + 60, bodystartpos.x - 60, ease.timerate);
 				bodyendpos.y = bodystartpos.y + 60;
 			}
-			else if (bodypat == up)
+			if (body_type == down)
 			{
-				bodystartpos = { center.x - 30,center.y - 30 };
-				bodyendpos.y = ease.easeout(bodystartpos.y - 60, bodystartpos.y + 60, ease.timerate);
-				bodyendpos.x = bodystartpos.x + 60;
-			}
-			else if (bodypat == right)
-			{
-				bodystartpos = { center.x + 30,center.y + 30 };
-				bodyendpos.x = ease.easeout(bodystartpos.x + 60, bodystartpos.x - 60, ease.timerate);
-				bodyendpos.y = bodystartpos.y - 60;
-			}
-			else if (bodypat == down)
-			{
-				bodystartpos = { center.x + 30,center.y + 30 };
+				bodystartpos = { center.x - 30,center.y + 30 };
 				bodyendpos.y = ease.easeout(bodystartpos.y + 60, bodystartpos.y - 60, ease.timerate);
-				bodyendpos.x = bodystartpos.x - 60;
+				bodyendpos.x = bodystartpos.x + 60;
 			}
 
 			if (ease.timerate >= 1.0f)
 			{
 				ease.ismove = false;
-				Isaction_fold = false;
+				Isaction = false;
 			}
 		}
 		else
 		{
-			if (bodypat == left)
+			if (body_type == left)
 			{
-				bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
+				bodystartpos = { center.x + 30,center.y - 30 };
+				bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
 			}
-			else if (bodypat == up)
+			else if (body_type == up)
 			{
-				bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
+				bodystartpos = { center.x - 30,center.y + 30 };
+				bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
 			}
-			else if (bodypat == right)
+			else if (body_type == right)
 			{
-				bodyendpos = { bodystartpos.x - 60,bodystartpos.y - 60 };
+				bodystartpos = { center.x + 30,center.y - 30 };
+				bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
 			}
-			else if (bodypat == down)
+			else if (body_type == down)
 			{
-				bodyendpos = { bodystartpos.x - 60,bodystartpos.y - 60 };
+				bodystartpos = { center.x - 30,center.y + 30 };
+				bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
 			}
 		}
 	}
 
+	//顔のスライド
+	if (Isslide == true)
+	{
+		if (ease.ismove == true)
+		{
+			if (body_type == left)
+			{
+				ease.addtime += ease.maxtime / 60.0f;
+				ease.timerate = min(ease.addtime / ease.maxtime, 1.0f);
+
+				bodystartpos.x = ease.easeout(slidestartpos.x, slidestartpos.x + (60 * slidepat), ease.timerate);
+				bodyendpos.x = bodystartpos.x + 60;
+
+				if (ease.timerate >= 1.0f)
+				{
+					ease.ismove = false;
+					Isaction = false;
+					Isslide = false;
+				}
+			}
+		}
+	}
+}
+
+void body::setslide(int slidepat, Vector2 startpos)
+{
+	Isaction = true;
+	Isslide = true;
+	ease.ismove = true;
+
+	ease.addtime = 0.1f;
+	ease.maxtime = 1.5f;
+	ease.timerate = 0.0f;
+
+	this->slidepat = slidepat;
+
+	this->slidestartpos = startpos;
 }
 
 void body::draw()
 {
-	if (bodypat == left)
+	DrawBox(bodystartpos.x, bodystartpos.y, bodyendpos.x, bodyendpos.y, bodycolor, true);
+
+	/*if (bodypat == left)
 	{
 		DrawBox(bodystartpos.x, bodystartpos.y, bodyendpos.x, bodyendpos.y, GetColor(255, 255, 0), true);
 	}
@@ -495,5 +557,5 @@ void body::draw()
 	else if (bodypat == down)
 	{
 		DrawBox(bodystartpos.x, bodystartpos.y, bodyendpos.x, bodyendpos.y, GetColor(0, 255, 255), true);
-	}
+	}*/
 }
