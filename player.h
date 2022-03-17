@@ -29,6 +29,10 @@ enum bodytype
 
 struct body
 {
+	//有効化フラグ
+	bool Isactivate = false;
+
+	//顔から見た体の位置
 	int body_type;
 
 	//体の座標
@@ -51,6 +55,9 @@ struct body
 	//折る・開く・スライドをしている途中かどうか
 	bool Isaction = false;
 
+	//スライドする距離
+	int slide_dis;
+
 	//上に重なっている噛みの数
 	int overlap = 0;
 
@@ -65,8 +72,12 @@ struct body
 
 	void init(Vector2 position, bodytype number);
 	void update(Vector2 center);
-	//1 or -1(1:right&down -1:left&up)
-	void setslide(int slidepat, Vector2 startpos);
+	/// <summary>
+	/// 体のスライドのセットアップ
+	/// </summary>
+	/// <param name="slidepat">スライドする向き(左上:-1 右下:1)</param>
+	/// <param name="move_dis">スライドする距離(隣:1 顔をまたぐ:2)</param>
+	void setslide(int slidepat,int move_dis);
 	void draw();
 };
 
