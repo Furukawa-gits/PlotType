@@ -72,13 +72,13 @@ void Player::Update()
 	if (key[KEY_INPUT_W] && IsJump == false)
 	{
 		IsJump = true;
-		fallspeed = 4.2f;
+		fallspeed = 8.0f;
 	}
 
 	if (IsJump == true)
 	{
 		center_position.y -= fallspeed;
-		fallspeed -= 0.1f;
+		fallspeed -= 0.5f;
 
 		if (center_position.y >= floorHeight - 30)
 		{
@@ -221,7 +221,7 @@ void Player::Update()
 			{
 				body_two.overlap--;
 			}
-			if (body_three.Isfold == true)
+			if (body_three.Isfold == true || (body_three.Isopen == true && body_three.body_type == left))
 			{
 				body_three.overlap--;
 			}
@@ -259,7 +259,7 @@ void Player::Update()
 			body_three.Isopen = true;
 			body_three.Isaction = true;
 
-			if (body_one.Isfold == true)
+			if (body_one.Isfold == true || (body_one.Isopen == true && body_one.body_type == right))
 			{
 				body_one.overlap--;
 			}
@@ -271,26 +271,33 @@ void Player::Update()
 	}
 
 	//体のスライド
-	//左
+	//左にスライド
 	if (returnkeytrigger(KEY_INPUT_Z) && body_one.bodydistance < 2 && body_one.Isaction == false)
 	{
 		if (body_one.body_type == right)
 		{
-			if (body_three.Isopen == true)
+			body_one.setslide(-1, 2);
+			body_three.bodydistance = 1;
+			body_three.setslide(-1, 1);
+		}
+		if (body_one.body_type == left && body_one.bodydistance == 1 && body_three.Isfold == false)
+		{
+			if (body_one.Isfold == true)
 			{
-				body_one.setslide(-1, 2);
-				body_three.bodydistance = 1;
-				body_three.setslide(-1, 1);
+				body_three.overlap = 1;
+				body_one.bodydistance = 2;
+				body_one.setslide(-1, 1);
+				body_three.setslide(-1, 2);
+			}
+			else
+			{
+				body_one.bodydistance = 2;
+				body_one.setslide(-1, 1);
+				body_three.setslide(-1, 2);
 			}
 		}
-		else if (body_one.bodydistance == 1)
-		{
-			body_one.bodydistance = 2;
-			body_one.setslide(-1, 1);
-			body_three.setslide(-1, 2);
-		}
 	}
-	//右
+	//右にスライド
 	if (returnkeytrigger(KEY_INPUT_X) && body_three.bodydistance < 2 && body_three.Isaction == false)
 	{
 		if (body_three.body_type == left)
@@ -299,14 +306,24 @@ void Player::Update()
 			body_one.bodydistance = 1;
 			body_one.setslide(1, 1);
 		}
-		else if (body_three.bodydistance == 1)
+		if (body_three.body_type == right && body_three.bodydistance == 1 && body_one.Isfold == false)
 		{
-			body_three.bodydistance = 2;
-			body_three.setslide(1, 1);
-			body_one.setslide(1, 2);
+			if (body_three.Isfold == true)
+			{
+				body_one.overlap = 1;
+				body_three.bodydistance = 2;
+				body_three.setslide(1, 1);
+				body_one.setslide(1, 2);
+			}
+			else
+			{
+				body_three.bodydistance = 2;
+				body_three.setslide(1, 1);
+				body_one.setslide(1, 2);
+			}
 		}
 	}
-	//上下
+	//上下のスライド
 	if (returnkeytrigger(KEY_INPUT_C) && body_two.Isfold == false && body_two.Isaction == false)
 	{
 		if (body_two.body_type == up)
@@ -391,7 +408,7 @@ void Player::Draw()
 	{
 		if (body_three.slide_dis == 2)
 		{
-			DrawBox(center_position.x - 30, center_position.y - 30, body_one.bodyendpos.x, body_one.bodyendpos.y, body_three.bodycolor, true);
+			//DrawBox(center_position.x - 30, center_position.y - 30, body_one.bodyendpos.x, body_one.bodyendpos.y, body_three.bodycolor, true);
 		}
 		if (body_one.slide_dis == 2)
 		{
@@ -401,12 +418,15 @@ void Player::Draw()
 		DrawBox(center_position.x - 30, center_position.y - 30, center_position.x + 30, center_position.y + 30, GetColor(255, 0, 0), true);
 	}
 
+#pragma region UI
 	DrawFormatString(0, 0, GetColor(255, 255, 255), "AD:左右移動");
-	DrawFormatString(0, 20, GetColor(255, 255, 255), "SPACE:ジャンプ");
-	DrawFormatString(0, 40, GetColor(255, 255, 255), "←↑→:折る・開く");
-	DrawFormatString(0, 60, GetColor(255, 255, 255), "重なっている枚数\n左：%d\n上：%d\n右：%d", body_one.overlap, body_two.overlap, body_three.overlap);
-	DrawFormatString(0, 140, GetColor(255, 255, 255), "左右スライド：Z or X\n上下スライド：C or V");
-	DrawFormatString(0, 180, GetColor(255, 255, 255), "%f   %f   %f", body_one.bodystartpos.x, body_one.bodyendpos.x, center_position.x);
+	DrawFormatString(0, 20, GetColor(255, 255, 255), "W:ジャンプ");
+	DrawFormatString(0, 40, GetColor(255, 255, 255), "←↑→:折る");
+	DrawFormatString(0, 60, GetColor(255, 255, 255), "SPACE:開く");
+	DrawFormatString(0, 80, GetColor(255, 255, 255), "重なっている枚数\n左：%d\n上：%d\n右：%d", body_one.overlap, body_two.overlap, body_three.overlap);
+	DrawFormatString(0, 160, GetColor(255, 255, 255), "左右スライド：Z or X\n上下スライド：C or V");
+	DrawFormatString(0, 200, GetColor(255, 255, 255), "%f   %f   %f", body_three.bodystartpos.x, body_three.bodyendpos.x, center_position.x);
+#pragma endregion UI
 }
 
 bool Player::returnkeytrigger(int keycode)
@@ -453,6 +473,7 @@ void body::setactivate(Vector2 center)
 		Isopen = true;
 		Isslide = false;
 		bodydistance = 1;
+		overlap = 0;
 
 		if (body_type == left)
 		{
@@ -612,22 +633,22 @@ void body::update(Vector2 center)
 		if (body_type == left)
 		{
 			bodystartpos = { ease.easeout(center.x - 90, center.x + 30, ease.timerate), center.y - 30 };
-			bodyendpos = { bodystartpos.x + (-120 * Isfold + 60), center.y + 30 };
+			bodyendpos = { bodystartpos.x + 60, center.y + 30 };
 		}
 		else if (body_type == right)
 		{
 			bodystartpos = { ease.easeout(center.x + 30, center.x - 90, ease.timerate), center.y - 30 };
-			bodyendpos = { bodystartpos.x + (-120 * Isfold + 60), center.y + 30 };
+			bodyendpos = { bodystartpos.x + 60, center.y + 30 };
 		}
 		else if (body_type == up)
 		{
 			bodystartpos = { center.x - 30, ease.easeout(center.y - 90, center.y + 30, ease.timerate) };
-			bodyendpos = { center.x + 30, bodystartpos.y + (-120 * Isfold + 60) };
+			bodyendpos = { center.x + 30, bodystartpos.y + 60 };
 		}
 		else if (body_type == down)
 		{
 			bodystartpos = { center.x - 30, ease.easeout(center.y + 30, center.y - 90, ease.timerate) };
-			bodyendpos = { center.x + 30, bodystartpos.y + (-120 * Isfold + 60) };
+			bodyendpos = { center.x + 30, bodystartpos.y + 60 };
 		}
 
 		if (ease.timerate >= 1.0f)
@@ -665,12 +686,13 @@ void body::update(Vector2 center)
 		{
 			if (slidepat == -1)
 			{
-				bodystartpos = { ease.easeout(center.x - 90, center.x - 150, ease.timerate), center.y - 30 };
+				bodyendpos = { ease.easeout(center.x - 30, center.x - 90, ease.timerate), center.y - 30 };
 			}
 			else
 			{
-				bodystartpos = { ease.easeout(center.x - 150, center.x - 90, ease.timerate), center.y - 30 };
+				bodyendpos = { ease.easeout(center.x - 90, center.x - 30, ease.timerate), center.y - 30 };
 			}
+			bodystartpos = { bodyendpos.x + (120 * Isfold - 60), center.y + 30 };
 		}
 		else if (body_type == right)
 		{
@@ -682,9 +704,9 @@ void body::update(Vector2 center)
 			{
 				bodystartpos = { ease.easeout(center.x + 30, center.x + 90, ease.timerate), center.y - 30 };
 			}
+			bodyendpos = { bodystartpos.x + (-120 * Isfold + 60), center.y + 30 };
 		}
 
-		bodyendpos = { bodystartpos.x + (-120 * Isfold + 60), center.y + 30 };
 
 		if (ease.timerate >= 1.0f)
 		{

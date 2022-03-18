@@ -40,13 +40,14 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
 		ClearDrawScreen();
 
 		//•`‰æ
-		player.Draw();
 		DrawLine(0, 500, 1280, 500, GetColor(0, 255, 0), 3);
+		DrawBox(400, 440, 460, 500, GetColor(255, 255, 255), true);
+		player.Draw();
 
 		//ƒtƒŠƒbƒv
 		ScreenFlip();
 
-		WaitTimer(10);
+		WaitTimer(20);
 	}
 
 	DxLib_End();

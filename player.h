@@ -35,10 +35,10 @@ struct body
 	//顔から見た体の位置
 	int body_type;
 
-	//体の座標
+	//体の座標(初期状態：左上)
 	Vector2 bodystartpos;
 
-	//端の座標
+	//体の座標(初期状態：右下)
 	Vector2 bodyendpos;
 
 	//スライドの開始座標
