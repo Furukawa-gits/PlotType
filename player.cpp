@@ -98,7 +98,7 @@ void Player::Update()
 		}
 	}
 
-	//折る・開く
+	//折る
 	//左
 	if (returnkeytrigger(KEY_INPUT_LEFT) && body_one.ease.ismove == false && body_one.body_type == left)
 	{
@@ -118,7 +118,7 @@ void Player::Update()
 			{
 				body_two.overlap++;
 			}
-			if (body_three.Isfold == true)
+			if (body_three.Isfold == true || body_one.bodydistance == 2)
 			{
 				body_three.overlap++;
 			}
@@ -164,7 +164,7 @@ void Player::Update()
 			body_three.Isopen = false;
 			body_three.Isaction = true;
 
-			if (body_one.Isfold == true)
+			if (body_one.Isfold == true || body_three.bodydistance == 2)
 			{
 				body_one.overlap++;
 			}
@@ -203,7 +203,7 @@ void Player::Update()
 	}
 
 	//開く
-	if (key[KEY_INPUT_SPACE] == true && oldkey[KEY_INPUT_SPACE] == false)
+	if (returnkeytrigger(KEY_INPUT_SPACE))
 	{
 		//左
 		if (body_one.Isfold == true && body_one.Isopen == false && body_one.Isaction == false && body_one.overlap == 0)
@@ -270,9 +270,8 @@ void Player::Update()
 		}
 	}
 
-
 	//体のスライド
-	//左にずらす
+	//左
 	if (returnkeytrigger(KEY_INPUT_Z) && body_one.bodydistance < 2 && body_one.Isaction == false)
 	{
 		if (body_one.body_type == right)
@@ -288,7 +287,7 @@ void Player::Update()
 			body_three.setslide(-1, 2);
 		}
 	}
-	//右にずらす
+	//右
 	if (returnkeytrigger(KEY_INPUT_X) && body_three.bodydistance < 2 && body_three.Isaction == false)
 	{
 		if (body_three.body_type == left)
@@ -305,7 +304,7 @@ void Player::Update()
 		}
 	}
 	//上下
-	if (returnkeytrigger(KEY_INPUT_C) && body_two.Isaction == false)
+	if (returnkeytrigger(KEY_INPUT_C) && body_two.Isfold == false && body_two.Isaction == false)
 	{
 		if (body_two.body_type == up)
 		{
@@ -315,6 +314,12 @@ void Player::Update()
 		{
 			body_two.setslide(-1, 2);
 		}
+	}
+
+	//体のリセット
+	if (returnkeytrigger(KEY_INPUT_R))
+	{
+		bodysetup(true, true, true);
 	}
 
 	if (body_one.Isactivate == true)
@@ -443,6 +448,7 @@ void body::setactivate(Vector2 center)
 	{
 		Isfold = false;
 		Isopen = true;
+		Isslide = false;
 		bodydistance = 1;
 
 		if (body_type == left)
@@ -497,7 +503,7 @@ void body::update(Vector2 center)
 			if (body_type == down)
 			{
 				bodystartpos = { center.x + 30,center.y + 30 };
-				bodyendpos.y = ease.easeout(bodystartpos.y + 60, bodystartpos.y - 60, ease.timerate);
+				bodyendpos.y = ease.easeout(bodystartpos.y - 60, bodystartpos.y + 60, ease.timerate);
 				bodyendpos.x = bodystartpos.x - 60;
 			}
 
