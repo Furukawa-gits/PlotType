@@ -20,6 +20,33 @@ void Player::init()
 
 	body_three.init(center_position, right);
 	body_three.bodycolor = GetColor(255, 0, 255);
+
+	bodysetup(true, true, true);
+}
+
+void Player::bodysetup(bool one, bool two, bool three)
+{
+	if (one == true)
+	{
+		body_one.Isactivate = true;
+		body_one.body_type = left;
+	}
+
+	if (two == true)
+	{
+		body_two.Isactivate = true;
+		body_two.body_type = up;
+	}
+
+	if (three == true)
+	{
+		body_three.Isactivate = true;
+		body_three.body_type = right;
+	}
+
+	body_one.setactivate(center_position);
+	body_two.setactivate(center_position);
+	body_three.setactivate(center_position);
 }
 
 void Player::Update()
@@ -290,9 +317,18 @@ void Player::Update()
 		}
 	}
 
-	body_one.update(center_position);
-	body_two.update(center_position);
-	body_three.update(center_position);
+	if (body_one.Isactivate == true)
+	{
+		body_one.update(center_position);
+	}
+	if (body_two.Isactivate == true)
+	{
+		body_two.update(center_position);
+	}
+	if (body_three.Isactivate == true)
+	{
+		body_three.update(center_position);
+	}
 }
 
 void Player::Draw()
@@ -362,7 +398,7 @@ void Player::Draw()
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "←↑→:折る・開く");
 	DrawFormatString(0, 60, GetColor(255, 255, 255), "重なっている枚数\n左：%d\n上：%d\n右：%d", body_one.overlap, body_two.overlap, body_three.overlap);
 	DrawFormatString(0, 140, GetColor(255, 255, 255), "左右スライド：Z or X\n上下スライド：C or V");
-	DrawFormatString(0, 180, GetColor(255, 255, 255), "%d   %d   %d", body_one.bodydistance, body_one.body_type, body_one.Isfold);
+	DrawFormatString(0, 180, GetColor(255, 255, 255), "%f   %f   %f", body_one.bodystartpos.x, body_one.bodyendpos.x, center_position.x);
 }
 
 bool Player::returnkeytrigger(int keycode)
@@ -401,6 +437,35 @@ void body::init(Vector2 position, bodytype number)
 	Isfold = false;
 }
 
+void body::setactivate(Vector2 center)
+{
+	if (Isactivate == true)
+	{
+		Isfold = false;
+		Isopen = true;
+		bodydistance = 1;
+
+		if (body_type == left)
+		{
+			bodystartpos = { center.x - 90,center.y - 30 };
+		}
+		else if (body_type == right)
+		{
+			bodystartpos = { center.x + 30,center.y - 30 };
+		}
+		else if (body_type == up)
+		{
+			bodystartpos = { center.x - 30,center.y - 90 };
+		}
+		else if (body_type == down)
+		{
+			bodystartpos = { center.x - 30,center.y + 30 };
+		}
+
+		bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
+	}
+}
+
 void body::update(Vector2 center)
 {
 	//開いているとき
@@ -413,7 +478,7 @@ void body::update(Vector2 center)
 
 			if (body_type == left)
 			{
-				bodyendpos = { center.x - (30 * bodydistance),center.y + 30 };
+				bodyendpos = { center.x - (30 + 60 * (bodydistance - 1)),center.y + 30 };
 				bodystartpos.x = ease.easeout(bodyendpos.x + 60, bodyendpos.x - 60, ease.timerate);
 				bodystartpos.y = bodyendpos.y - 60;
 			}
@@ -425,7 +490,7 @@ void body::update(Vector2 center)
 			}
 			if (body_type == right)
 			{
-				bodystartpos = { center.x + (30 * bodydistance),center.y - 30 };
+				bodystartpos = { center.x + (30 + 60 * (bodydistance - 1)),center.y - 30 };
 				bodyendpos.x = ease.easeout(bodystartpos.x - 60, bodystartpos.x + 60, ease.timerate);
 				bodyendpos.y = bodystartpos.y + 60;
 			}
@@ -474,7 +539,7 @@ void body::update(Vector2 center)
 
 			if (body_type == left)
 			{
-				bodyendpos = { center.x - 30,center.y + 30 };
+				bodyendpos = { center.x - (30 + 60 * (bodydistance - 1)),center.y + 30 };
 				bodystartpos.x = ease.easeout(bodyendpos.x - 60, bodyendpos.x + 60, ease.timerate);
 				bodystartpos.y = bodyendpos.y - 60;
 			}
@@ -486,7 +551,7 @@ void body::update(Vector2 center)
 			}
 			if (body_type == right)
 			{
-				bodystartpos = { center.x + 30,center.y - 30 };
+				bodystartpos = { center.x + (30 + 60 * (bodydistance - 1)),center.y - 30 };
 				bodyendpos.x = ease.easeout(bodystartpos.x + 60, bodystartpos.x - 60, ease.timerate);
 				bodyendpos.y = bodystartpos.y + 60;
 			}
@@ -507,8 +572,8 @@ void body::update(Vector2 center)
 		{
 			if (body_type == left)
 			{
-				bodystartpos = { center.x + 30,center.y - 30 };
-				bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
+				bodyendpos = { center.x - (30 + 60 * (bodydistance - 1)),center.y + 30 };
+				bodystartpos = { bodyendpos.x + 60, bodyendpos.y - 60 };
 			}
 			else if (body_type == up)
 			{
@@ -517,7 +582,7 @@ void body::update(Vector2 center)
 			}
 			else if (body_type == right)
 			{
-				bodystartpos = { center.x + 30,center.y - 30 };
+				bodystartpos = { center.x + (30 + 60 * (bodydistance - 1)),center.y - 30 };
 				bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
 			}
 			else if (body_type == down)
@@ -638,5 +703,8 @@ void body::setslide(int slidepat, int move_dis)
 
 void body::draw()
 {
-	DrawBox(bodystartpos.x, bodystartpos.y, bodyendpos.x, bodyendpos.y, bodycolor, true);
+	if (Isactivate == true)
+	{
+		DrawBox(bodystartpos.x, bodystartpos.y, bodyendpos.x, bodyendpos.y, bodycolor, true);
+	}
 }

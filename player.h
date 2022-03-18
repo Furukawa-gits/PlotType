@@ -71,13 +71,22 @@ struct body
 	int bodycolor = GetColor(255, 255, 255);
 
 	void init(Vector2 position, bodytype number);
+
+	/// <summary>
+	/// 体を有効化した時の設定
+	/// </summary>
+	/// <param name="center">有効化した時の座標参照先</param>
+	void setactivate(Vector2 center);
+
 	void update(Vector2 center);
+
 	/// <summary>
 	/// 体のスライドのセットアップ
 	/// </summary>
 	/// <param name="slidepat">スライドする向き(左上:-1 右下:1)</param>
 	/// <param name="move_dis">スライドする距離(隣:1 顔をまたぐ:2)</param>
 	void setslide(int slidepat,int move_dis);
+
 	void draw();
 };
 
@@ -111,6 +120,14 @@ public:
 
 	//初期化
 	void init();
+
+	/// <summary>
+	/// どの体を有効化するか
+	/// </summary>
+	/// <param name="one">body_one</param>
+	/// <param name="two">body_two</param>
+	/// <param name="three">body_three</param>
+	void bodysetup(bool one, bool two, bool three);
 
 	//更新
 	void Update();
