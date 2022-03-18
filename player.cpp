@@ -21,27 +21,27 @@ void Player::init()
 	body_three.init(center_position, right);
 	body_three.bodycolor = GetColor(255, 0, 255);
 
-	bodysetup(true, true, true);
+	bodysetup(true, left, true, up, true, right);
 }
 
-void Player::bodysetup(bool one, bool two, bool three)
+void Player::bodysetup(bool one, int one_type, bool two, int two_type, bool three, int three_type)
 {
 	if (one == true)
 	{
 		body_one.Isactivate = true;
-		body_one.body_type = left;
+		body_one.body_type = one_type;
 	}
 
 	if (two == true)
 	{
 		body_two.Isactivate = true;
-		body_two.body_type = up;
+		body_two.body_type = two_type;
 	}
 
 	if (three == true)
 	{
 		body_three.Isactivate = true;
-		body_three.body_type = right;
+		body_three.body_type = three_type;
 	}
 
 	body_one.setactivate(center_position);
@@ -276,9 +276,12 @@ void Player::Update()
 	{
 		if (body_one.body_type == right)
 		{
-			body_one.setslide(-1, 2);
-			body_three.bodydistance = 1;
-			body_three.setslide(-1, 1);
+			if (body_three.Isopen == true)
+			{
+				body_one.setslide(-1, 2);
+				body_three.bodydistance = 1;
+				body_three.setslide(-1, 1);
+			}
 		}
 		else if (body_one.bodydistance == 1)
 		{
@@ -319,7 +322,7 @@ void Player::Update()
 	//‘Ì‚ÌƒŠƒZƒbƒg
 	if (returnkeytrigger(KEY_INPUT_R))
 	{
-		bodysetup(true, true, true);
+		bodysetup(true, left, true, up, true, right);
 	}
 
 	if (body_one.Isactivate == true)
