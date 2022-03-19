@@ -47,6 +47,11 @@ void Player::bodysetup(bool one, int one_type, bool two, int two_type, bool thre
 	body_one.setactivate(center_position);
 	body_two.setactivate(center_position);
 	body_three.setactivate(center_position);
+
+	for (int i = 0; i < 3; i++)
+	{
+		foldlist[i] = 0;
+	}
 }
 
 void Player::Update()
@@ -114,7 +119,7 @@ void Player::Update()
 			body_one.Isopen = false;
 			body_one.Isaction = true;
 
-			if (body_two.Isfold == true)
+			if (body_two.Isfold == true && body_one.bodydistance == 1)
 			{
 				body_two.overlap++;
 			}
@@ -122,6 +127,33 @@ void Player::Update()
 			{
 				body_three.overlap++;
 			}
+		}
+
+		if (body_one.Isfold == true && body_one.Isopen == false && body_one.foldcount == 1 && body_one.Isaction == false && body_three.body_type == left)
+		{
+			body_three.ease.addtime = 0.1f;
+			body_three.ease.maxtime = 1.5f;
+			body_three.ease.timerate = 0.0f;
+
+			body_three.ease.ismove = true;
+			body_three.Isfold = true;
+			body_three.Isopen = false;
+			body_three.Isaction = true;
+			body_three.overlap = 0;
+
+			body_one.Isaction = true;
+			body_one.ease.ismove = true;
+			body_one.overlap = 1;
+
+			if (body_two.Isfold == true)
+			{
+				body_two.overlap = 2;
+			}
+		}
+
+		if (body_one.bodydistance == 2 && body_two.Isfold == true)
+		{
+			isopentwo = false;
 		}
 	}
 	//上
@@ -139,13 +171,24 @@ void Player::Update()
 			body_two.Isopen = false;
 			body_two.Isaction = true;
 
-			if (body_one.Isfold == true)
+			if (body_one.foldcount == 1 && body_one.body_type == left)
 			{
 				body_one.overlap++;
 			}
-			if (body_three.Isfold == true)
+			if (body_three.foldcount == 1 && body_three.body_type == right)
 			{
 				body_three.overlap++;
+			}
+
+			if (body_one.foldcount == 2)
+			{
+				body_one.overlap = 2;
+				body_three.overlap = 1;
+			}
+			if (body_three.foldcount == 2)
+			{
+				body_three.overlap = 2;
+				body_one.overlap = 1;
 			}
 		}
 	}
@@ -168,13 +211,38 @@ void Player::Update()
 			{
 				body_one.overlap++;
 			}
-			if (body_two.Isfold == true)
+			if (body_two.Isfold == true && body_three.bodydistance == 1)
 			{
 				body_two.overlap++;
 			}
 		}
 
+		if (body_three.Isfold == true && body_three.Isopen == false && body_three.foldcount == 1 && body_three.Isaction == false && body_one.body_type == right)
+		{
+			body_one.ease.addtime = 0.1f;
+			body_one.ease.maxtime = 1.5f;
+			body_one.ease.timerate = 0.0f;
 
+			body_one.ease.ismove = true;
+			body_one.Isfold = true;
+			body_one.Isopen = false;
+			body_one.Isaction = true;
+			body_one.overlap = 0;
+
+			body_three.Isaction = true;
+			body_three.ease.ismove = true;
+			body_three.overlap = 1;
+
+			if (body_two.Isfold == true)
+			{
+				body_two.overlap = 2;
+			}
+		}
+
+		if (body_three.bodydistance == 2 && body_two.Isfold == true)
+		{
+			isopentwo = false;
+		}
 	}
 	//下
 	if (returnkeytrigger(KEY_INPUT_DOWN) && body_two.ease.ismove == false && body_two.body_type == down)
@@ -191,11 +259,20 @@ void Player::Update()
 			body_two.Isopen = false;
 			body_two.Isaction = true;
 
-			if (body_one.Isfold == true)
+			if (body_one.foldcount < 2 && body_one.bodydistance == 1)
 			{
 				body_one.overlap++;
 			}
-			if (body_three.Isfold == true)
+			if (body_three.foldcount < 2 && body_three.bodydistance == 1)
+			{
+				body_three.overlap++;
+			}
+
+			if (body_one.foldcount == 2)
+			{
+				body_one.overlap++;
+			}
+			if (body_three.foldcount == 2)
 			{
 				body_three.overlap++;
 			}
@@ -206,7 +283,8 @@ void Player::Update()
 	if (returnkeytrigger(KEY_INPUT_SPACE))
 	{
 		//左
-		if (body_one.Isfold == true && body_one.Isopen == false && body_one.Isaction == false && body_one.overlap == 0)
+		if (body_one.Isfold == true && body_one.Isaction == false && body_one.body_type == left && body_one.overlap == 0 ||
+			body_three.body_type == left && body_three.Isfold == true && body_three.overlap == 0)
 		{
 			body_one.ease.addtime = 0.1f;
 			body_one.ease.maxtime = 1.5f;
@@ -217,17 +295,42 @@ void Player::Update()
 			body_one.Isopen = true;
 			body_one.Isaction = true;
 
-			if (body_two.Isfold == true)
+			if (body_one.foldcount == 2)
+			{
+				body_three.ease.addtime = 0.1f;
+				body_three.ease.maxtime = 1.5f;
+				body_three.ease.timerate = 0.0f;
+
+				body_three.ease.ismove = true;
+				body_three.Isfold = false;
+				body_three.Isopen = true;
+				body_three.Isaction = true;
+
+				body_three.overlap = 1;
+				body_one.overlap = 0;
+
+				if (body_two.Isfold == true)
+				{
+					body_two.overlap = 0;
+				}
+			}
+
+			if (body_two.Isfold == true && body_one.bodydistance == 1)
 			{
 				body_two.overlap--;
 			}
-			if (body_three.Isfold == true || (body_three.Isopen == true && body_three.body_type == left))
+			if (body_three.body_type == right && body_three.Isfold == true || body_one.foldcount == 1 && body_three.body_type == left)
 			{
 				body_three.overlap--;
 			}
+
+			if (body_one.bodydistance == 2 && body_one.foldcount == 1 && isopentwo == false)
+			{
+				isopentwo = true;
+			}
 		}
 		//上
-		else if (body_two.Isfold == true && body_two.Isopen == false && body_two.Isaction == false && body_two.overlap == 0)
+		else if (body_two.Isfold == true && body_two.Isaction == false && body_two.overlap == 0 && isopentwo == true)
 		{
 			body_two.ease.addtime = 0.1f;
 			body_two.ease.maxtime = 1.5f;
@@ -242,13 +345,14 @@ void Player::Update()
 			{
 				body_one.overlap--;
 			}
-			if (body_three.Isfold == true)
+			if (body_three.Isfold == true && body_three.overlap > 0)
 			{
 				body_three.overlap--;
 			}
 		}
 		//右
-		else if (body_three.Isfold == true && body_three.Isopen == false && body_three.Isaction == false && body_three.overlap == 0)
+		else if (body_three.Isfold == true && body_three.Isaction == false && body_three.body_type == right && body_three.overlap == 0 ||
+			body_one.body_type == right && body_one.Isfold == true)
 		{
 			body_three.ease.addtime = 0.1f;
 			body_three.ease.maxtime = 1.5f;
@@ -259,23 +363,49 @@ void Player::Update()
 			body_three.Isopen = true;
 			body_three.Isaction = true;
 
-			if (body_one.Isfold == true || (body_one.Isopen == true && body_one.body_type == right))
+			if (body_three.foldcount == 2)
+			{
+				body_one.ease.addtime = 0.1f;
+				body_one.ease.maxtime = 1.5f;
+				body_one.ease.timerate = 0.0f;
+
+				body_one.ease.ismove = true;
+				body_one.Isfold = false;
+				body_one.Isopen = true;
+				body_one.Isaction = true;
+
+				body_one.overlap = 1;
+				body_three.overlap = 0;
+
+				if (body_two.Isfold == true)
+				{
+					body_two.overlap = 0;
+				}
+			}
+
+			if (body_two.Isfold == true && body_three.bodydistance == 1)
+			{
+				body_two.overlap--;
+			}
+			if (body_one.body_type == left && body_one.Isfold == true || body_three.foldcount == 1 && body_one.body_type == right)
 			{
 				body_one.overlap--;
 			}
-			if (body_two.Isfold == true)
+
+			if (body_three.bodydistance == 2 && body_three.foldcount == 1 && isopentwo == false)
 			{
-				body_two.overlap--;
+				isopentwo = true;
 			}
 		}
 	}
 
 	//体のスライド
 	//左にスライド
-	if (returnkeytrigger(KEY_INPUT_Z) && body_one.bodydistance < 2 && body_one.Isaction == false)
+	if (returnkeytrigger(KEY_INPUT_Z) && body_one.bodydistance < 2 && body_one.Isaction == false && body_three.foldcount < 2)
 	{
 		if (body_one.body_type == right)
 		{
+			body_one.overlap = 0;
 			body_one.setslide(-1, 2);
 			body_three.bodydistance = 1;
 			body_three.setslide(-1, 1);
@@ -288,6 +418,11 @@ void Player::Update()
 				body_one.bodydistance = 2;
 				body_one.setslide(-1, 1);
 				body_three.setslide(-1, 2);
+
+				if (body_two.Isfold == true)
+				{
+					body_two.overlap = 0;
+				}
 			}
 			else
 			{
@@ -298,10 +433,11 @@ void Player::Update()
 		}
 	}
 	//右にスライド
-	if (returnkeytrigger(KEY_INPUT_X) && body_three.bodydistance < 2 && body_three.Isaction == false)
+	if (returnkeytrigger(KEY_INPUT_X) && body_three.bodydistance < 2 && body_three.Isaction == false && body_one.foldcount < 2)
 	{
 		if (body_three.body_type == left)
 		{
+			body_three.overlap = 0;
 			body_three.setslide(1, 2);
 			body_one.bodydistance = 1;
 			body_one.setslide(1, 1);
@@ -314,6 +450,11 @@ void Player::Update()
 				body_three.bodydistance = 2;
 				body_three.setslide(1, 1);
 				body_one.setslide(1, 2);
+
+				if (body_two.Isfold == true)
+				{
+					body_two.overlap = 0;
+				}
 			}
 			else
 			{
@@ -390,15 +531,15 @@ void Player::Draw()
 		body_three.draw();
 	}
 
-	if (body_one.overlap == 0)
+	if (body_one.overlap <= 0)
 	{
 		body_one.draw();
 	}
-	if (body_two.overlap == 0)
+	if (body_two.overlap <= 0)
 	{
 		body_two.draw();
 	}
-	if (body_three.overlap == 0)
+	if (body_three.overlap <= 0)
 	{
 		body_three.draw();
 	}
@@ -408,7 +549,7 @@ void Player::Draw()
 	{
 		if (body_three.slide_dis == 2)
 		{
-			//DrawBox(center_position.x - 30, center_position.y - 30, body_one.bodyendpos.x, body_one.bodyendpos.y, body_three.bodycolor, true);
+			DrawBox(center_position.x - 30, center_position.y - 30, body_one.bodyendpos.x, body_one.bodyendpos.y, body_three.bodycolor, true);
 		}
 		if (body_one.slide_dis == 2)
 		{
@@ -425,7 +566,9 @@ void Player::Draw()
 	DrawFormatString(0, 60, GetColor(255, 255, 255), "SPACE:開く");
 	DrawFormatString(0, 80, GetColor(255, 255, 255), "重なっている枚数\n左：%d\n上：%d\n右：%d", body_one.overlap, body_two.overlap, body_three.overlap);
 	DrawFormatString(0, 160, GetColor(255, 255, 255), "左右スライド：Z or X\n上下スライド：C or V");
-	DrawFormatString(0, 200, GetColor(255, 255, 255), "%f   %f   %f", body_three.bodystartpos.x, body_three.bodyendpos.x, center_position.x);
+	DrawFormatString(0, 200, GetColor(255, 255, 255), "%f   %f   %f", body_one.bodystartpos.x, body_one.bodyendpos.x, center_position.x);
+	DrawFormatString(0, 220, GetColor(255, 255, 255), "%d   %d   %d", body_one.bodydistance, body_two.bodydistance, body_three.bodydistance);
+	DrawFormatString(0, 240, GetColor(255, 255, 255), "   %d\n   %d\n   %d\n", foldlist[0], foldlist[1], foldlist[2]);
 #pragma endregion UI
 }
 
@@ -474,6 +617,7 @@ void body::setactivate(Vector2 center)
 		Isslide = false;
 		bodydistance = 1;
 		overlap = 0;
+		foldcount = 0;
 
 		if (body_type == left)
 		{
@@ -498,128 +642,200 @@ void body::setactivate(Vector2 center)
 
 void body::update(Vector2 center)
 {
-	//開いているとき
-	if (Isfold == false && Isopen == true)
+	//開いている途中
+	if (Isfold == false && Isopen == true && Isaction == true && Isslide == false)
 	{
-		if (ease.ismove == true && Isslide == false)
-		{
-			ease.addtime += ease.maxtime / 60.0f;
-			ease.timerate = min(ease.addtime / ease.maxtime, 1.0f);
+		ease.addtime += ease.maxtime / 60.0f;
+		ease.timerate = min(ease.addtime / ease.maxtime, 1.0f);
 
-			if (body_type == left)
+		if (body_type == left)
+		{
+			if (foldcount == 1)
 			{
 				bodyendpos = { center.x - (30 + 60 * (bodydistance - 1)),center.y + 30 };
 				bodystartpos.x = ease.easeout(bodyendpos.x + 60, bodyendpos.x - 60, ease.timerate);
 				bodystartpos.y = bodyendpos.y - 60;
 			}
-			if (body_type == up)
+			else if (foldcount == 2)
 			{
-				bodyendpos = { center.x + 30,center.y - 30 };
-				bodystartpos.y = ease.easeout(bodyendpos.y + 60, bodyendpos.y - 60, ease.timerate);
-				bodystartpos.x = bodyendpos.x - 60;
+				bodystartpos = { center.x - 30,center.y - 30 };
+				bodyendpos.x = ease.easeout(bodystartpos.x + 60, bodystartpos.x - 60, ease.timerate);
+				bodyendpos.y = bodystartpos.y + 60;
 			}
-			if (body_type == right)
+		}
+		if (body_type == up)
+		{
+			bodyendpos = { center.x + 30,center.y - 30 };
+			bodystartpos.y = ease.easeout(bodyendpos.y + 60, bodyendpos.y - 60, ease.timerate);
+			bodystartpos.x = bodyendpos.x - 60;
+		}
+		if (body_type == right)
+		{
+			if (foldcount == 1)
 			{
 				bodystartpos = { center.x + (30 + 60 * (bodydistance - 1)),center.y - 30 };
 				bodyendpos.x = ease.easeout(bodystartpos.x - 60, bodystartpos.x + 60, ease.timerate);
 				bodyendpos.y = bodystartpos.y + 60;
 			}
-			if (body_type == down)
+			else if (foldcount == 2)
 			{
-				bodystartpos = { center.x + 30,center.y + 30 };
-				bodyendpos.y = ease.easeout(bodystartpos.y - 60, bodystartpos.y + 60, ease.timerate);
-				bodyendpos.x = bodystartpos.x - 60;
-			}
-
-			if (ease.timerate >= 1.0f)
-			{
-				ease.ismove = false;
-				Isaction = false;
+				bodyendpos = { center.x + 30,center.y + 30 };
+				bodystartpos.x = ease.easeout(bodyendpos.x - 60, bodyendpos.x + 60, ease.timerate);
+				bodystartpos.y = bodyendpos.y - 60;
 			}
 		}
-		else if (Isaction == false)
+		if (body_type == down)
 		{
-			if (body_type == left)
+			bodystartpos = { center.x + 30,center.y + 30 };
+			bodyendpos.y = ease.easeout(bodystartpos.y - 60, bodystartpos.y + 60, ease.timerate);
+			bodyendpos.x = bodystartpos.x - 60;
+		}
+
+		if (ease.timerate >= 1.0f)
+		{
+			ease.ismove = false;
+			Isaction = false;
+			foldcount--;
+		}
+	}
+	//開いた後
+	if (Isfold == false && Isopen == true && Isaction == false)
+	{
+		if (body_type == left)
+		{
+			if (foldcount == 0)
 			{
 				bodystartpos = { center.x - (30 + bodydistance * 60),center.y - 30 };
+				bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
 			}
-			if (body_type == up)
+			else if (foldcount == 1)
 			{
-				bodystartpos = { center.x - 30,center.y - 90 };
+				bodystartpos = { center.x - 30,center.y - 30 };
+				bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
+				Isfold = true;
+				Isopen = false;
 			}
-			if (body_type == right)
+		}
+		if (body_type == up)
+		{
+			bodystartpos = { center.x - 30,center.y - 90 };
+			bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
+		}
+		if (body_type == right)
+		{
+			if (foldcount == 0)
 			{
 				bodystartpos = { center.x + (30 + (bodydistance - 1) * 60),center.y - 30 };
+				bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
 			}
-			if (body_type == down)
+			else if (foldcount == 1)
 			{
-				bodystartpos = { center.x - 30,center.y + 30 };
+				bodyendpos = { center.x + 30,center.y + 30 };
+				bodystartpos = { bodyendpos.x + 60,bodyendpos.y - 60 };
+				Isfold = true;
+				Isopen = false;
 			}
-
+		}
+		if (body_type == down)
+		{
+			bodystartpos = { center.x - 30,center.y + 30 };
 			bodyendpos = { bodystartpos.x + 60,bodystartpos.y + 60 };
 		}
 	}
-	//折るとき
-	else if (Isfold == true && Isopen == false)
+	//折っている途中
+	if (Isfold == true && Isopen == false && Isaction == true && Isslide == false)
 	{
-		if (ease.ismove == true && Isslide == false)
-		{
-			ease.addtime += ease.maxtime / 60.0f;
-			ease.timerate = min(ease.addtime / ease.maxtime, 1.0f);
+		ease.addtime += ease.maxtime / 60.0f;
+		ease.timerate = min(ease.addtime / ease.maxtime, 1.0f);
 
-			if (body_type == left)
+		if (body_type == left)
+		{
+			if (foldcount == 0)
 			{
 				bodyendpos = { center.x - (30 + 60 * (bodydistance - 1)),center.y + 30 };
 				bodystartpos.x = ease.easeout(bodyendpos.x - 60, bodyendpos.x + 60, ease.timerate);
 				bodystartpos.y = bodyendpos.y - 60;
 			}
-			if (body_type == up)
+			else if (foldcount == 1)
 			{
-				bodyendpos = { center.x + 30,center.y - 30 };
-				bodystartpos.y = ease.easeout(bodyendpos.y - 60, bodyendpos.y + 60, ease.timerate);
-				bodystartpos.x = bodyendpos.x - 60;
+				bodystartpos = { center.x - 30,center.y - 30 };
+				bodyendpos.x = ease.easeout(bodystartpos.x - 60, bodystartpos.x + 60, ease.timerate);
+				bodyendpos.y = bodystartpos.y + 60;
 			}
-			if (body_type == right)
+		}
+		if (body_type == up)
+		{
+			bodyendpos = { center.x + 30,center.y - 30 };
+			bodystartpos.y = ease.easeout(bodyendpos.y - 60, bodyendpos.y + 60, ease.timerate);
+			bodystartpos.x = bodyendpos.x - 60;
+		}
+		if (body_type == right)
+		{
+			if (foldcount == 0)
 			{
 				bodystartpos = { center.x + (30 + 60 * (bodydistance - 1)),center.y - 30 };
 				bodyendpos.x = ease.easeout(bodystartpos.x + 60, bodystartpos.x - 60, ease.timerate);
 				bodyendpos.y = bodystartpos.y + 60;
 			}
-			if (body_type == down)
+			else if (foldcount == 1)
 			{
-				bodystartpos = { center.x - 30,center.y + 30 };
-				bodyendpos.y = ease.easeout(bodystartpos.y + 60, bodystartpos.y - 60, ease.timerate);
-				bodyendpos.x = bodystartpos.x + 60;
-			}
-
-			if (ease.timerate >= 1.0f)
-			{
-				ease.ismove = false;
-				Isaction = false;
+				bodyendpos = { center.x + 30,center.y + 30 };
+				bodystartpos.x = ease.easeout(bodyendpos.x + 60, bodyendpos.x - 60, ease.timerate);
+				bodystartpos.y = bodyendpos.y - 60;
 			}
 		}
-		else
+		if (body_type == down)
 		{
-			if (body_type == left)
+			bodystartpos = { center.x - 30,center.y + 30 };
+			bodyendpos.y = ease.easeout(bodystartpos.y + 60, bodystartpos.y - 60, ease.timerate);
+			bodyendpos.x = bodystartpos.x + 60;
+		}
+
+		if (ease.timerate >= 1.0f)
+		{
+			ease.ismove = false;
+			Isaction = false;
+			foldcount++;
+		}
+	}
+	//折った後
+	if (Isfold == true && Isopen == false && Isaction == false)
+	{
+		if (body_type == left)
+		{
+			if (foldcount == 1)
 			{
 				bodyendpos = { center.x - (30 + 60 * (bodydistance - 1)),center.y + 30 };
 				bodystartpos = { bodyendpos.x + 60, bodyendpos.y - 60 };
 			}
-			else if (body_type == up)
+			else if (foldcount == 2)
 			{
-				bodystartpos = { center.x - 30,center.y + 30 };
-				bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
+				bodystartpos = { center.x - 30,center.y - 30 };
+				bodyendpos = { bodystartpos.x + 60, bodystartpos.y + 60 };
 			}
-			else if (body_type == right)
+		}
+		else if (body_type == up)
+		{
+			bodystartpos = { center.x - 30,center.y + 30 };
+			bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
+		}
+		else if (body_type == right)
+		{
+			if (foldcount == 1)
 			{
 				bodystartpos = { center.x + (30 + 60 * (bodydistance - 1)),center.y - 30 };
 				bodyendpos = { bodystartpos.x - 60,bodystartpos.y + 60 };
 			}
-			else if (body_type == down)
+			else if (foldcount == 2)
 			{
-				bodystartpos = { center.x - 30,center.y + 30 };
-				bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
+				bodystartpos = { center.x - 30,center.y - 30 };
+				bodyendpos = { bodystartpos.x + 60, bodystartpos.y + 60 };
 			}
+		}
+		else if (body_type == down)
+		{
+			bodystartpos = { center.x - 30,center.y + 30 };
+			bodyendpos = { bodystartpos.x + 60,bodystartpos.y - 60 };
 		}
 	}
 

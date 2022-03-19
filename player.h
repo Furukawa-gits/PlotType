@@ -48,6 +48,9 @@ struct body
 	bool Isfold = false;
 	bool Isopen = true;
 
+	//この体が折られた回数
+	int foldcount = 0;
+
 	//スライドフラグ・スライドする方向
 	bool Isslide = false;
 	int slidepat = 0;
@@ -85,7 +88,7 @@ struct body
 	/// </summary>
 	/// <param name="slidepat">スライドする向き(左上:-1 右下:1)</param>
 	/// <param name="move_dis">スライドする距離(隣:1 顔をまたぐ:2)</param>
-	void setslide(int slidepat,int move_dis);
+	void setslide(int slidepat, int move_dis);
 
 	void draw();
 };
@@ -100,10 +103,16 @@ public:
 	//体の構成要素
 	Vector2 center_position = { 100.0f,100.0f };
 
-	//体(折るほう)
+	//体
 	body body_one;
 	body body_two;
 	body body_three;
+
+	//折った体の順番
+	int foldlist[3];
+
+	//body_twoを優先的に開くか
+	bool isopentwo = true;
 
 	//ジャンプ
 	bool IsJump = false;
