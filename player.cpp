@@ -21,6 +21,9 @@ void Player::init()
 	body_three.init(center_position, right);
 	body_three.bodycolor = GetColor(255, 0, 255);
 
+	FaceHandle[0] = LoadGraph("resources/face.png");
+	FaceHandle[1] = LoadGraph("resources/face_fold.png");
+
 	bodysetup(true, left, true, up, true, right);
 }
 
@@ -495,13 +498,23 @@ void Player::Update()
 	{
 		body_three.update(center_position);
 	}
+
+	if (body_one.Isaction == true || body_two.Isaction == true || body_three.Isaction == true)
+	{
+		player_isaction = true;
+	}
+	else
+	{
+		player_isaction = false;
+	}
 }
 
 void Player::Draw()
 {
 	if (body_one.Isslide == false && body_two.Isslide == false && body_three.Isslide == false)
 	{
-		DrawBox(center_position.x - 30, center_position.y - 30, center_position.x + 30, center_position.y + 30, GetColor(255, 0, 0), true);
+		//DrawBox(center_position.x - 30, center_position.y - 30, center_position.x + 30, center_position.y + 30, GetColor(255, 0, 0), true);
+		DrawExtendGraph(center_position.x - 30, center_position.y - 30, center_position.x + 30, center_position.y + 30, FaceHandle[player_isaction], true);
 	}
 
 #pragma region èdÇ»Ç¡ÇƒÇ¢ÇÈñáêîÇ≤Ç∆Ç…èáî‘Ç…ï`âÊ
@@ -556,7 +569,8 @@ void Player::Draw()
 			DrawBox(center_position.x + 30, center_position.y - 30, body_three.bodystartpos.x, body_three.bodyendpos.y, body_one.bodycolor, true);
 		}
 
-		DrawBox(center_position.x - 30, center_position.y - 30, center_position.x + 30, center_position.y + 30, GetColor(255, 0, 0), true);
+		//DrawBox(center_position.x - 30, center_position.y - 30, center_position.x + 30, center_position.y + 30, GetColor(255, 0, 0), true);
+		DrawExtendGraph(center_position.x - 30, center_position.y - 30, center_position.x + 30, center_position.y + 30, FaceHandle[player_isaction], true);
 	}
 
 #pragma region UI

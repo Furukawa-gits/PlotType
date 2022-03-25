@@ -120,8 +120,12 @@ public:
 	float fallspeed = 3.0f;
 	bool IsLand = false;
 
+	bool player_isaction = false;
+
 	char key[256];
 	char oldkey[256];
+
+	int FaceHandle[2];
 
 	//関数
 	//コンストラクタ
